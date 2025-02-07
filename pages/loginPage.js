@@ -4,65 +4,53 @@ export class LoginPage {
     this.usernameInputField = page.locator('#email');
     this.passwordInputField = page.locator('#password');
     this.submitButton = page.locator('(//button[normalize-space()="Log in"])');
-    this.rememberMeCheck = page.locator('.checkbox')
-    this.errorMessage = page.locator('//p[normalize-space()="Wrong email or password"]')
-    this.logOutButton = page.locator('//li[@class="sub-menu"]//a[contains(text(),"Log out")]')
-    this.closeButton = page.locator('.CybotCookiebotBannerCloseButton')
+    this.rememberMeCheck = page.locator('.checkbox');
+    this.errorMessage = this.page.getByText('Wrong email or password')
+    this.logOutButton = page.locator('//li[@class="sub-menu"]//a[contains(text(),"Log out")]');
   }
+
+  // Visibility checks
   async isUsernameInputFieldVisible() {
-    const usernameInputField = this.usernameInputField;
-    return await usernameInputField.isVisible();
+    return this.usernameInputField.isVisible();
   }
-
   async isPasswordInputFieldVisible() {
-    const passwordInputField = this.passwordInputField;
-    return await passwordInputField.isVisible();
+    return this.passwordInputField.isVisible();
   }
-
   async isSubmitButtonVisible() {
-    const submitButton = this.submitButton;
-    return await submitButton.isVisible();
+    return this.submitButton.isVisible();
+  }
+  async isLogOutButtonVisible() {
+    return this.logOutButton.isVisible();
+  }
+  async isErrorMessageVisible() {
+    return this.errorMessage.isVisible();
   }
 
-  //login-page.js
+  // Input methods
   async fillUsername(username) {
-    const usernameInputField = this.usernameInputField;
-    await usernameInputField.fill(username);
+    await this.usernameInputField.fill(username);
   }
-
   async fillPassword(password) {
-    const passwordInputField = this.passwordInputField;
-    await passwordInputField.fill(password);
+    await this.passwordInputField.fill(password);
   }
-
   async logIn(username, password) {
     await this.fillUsername(username);
     await this.fillPassword(password);
   }
+
+  // Actions
   async checkRemember() {
-    await page.getByLabel('Remember me').check();
-    // expect(page.getByLabel('Remember me')).toBeChecked();
-    await this.checkRemember.toBeChecked();
+    await this.page.getByLabel('Remember me').check();
+    await expect(this.page.getByLabel('Remember me')).toBeChecked();
   }
-  //login-page.js
   async clickSubmitLoginButton() {
-    const clickAccessibilityButton = this.closeButton;
-    const submitButton = this.submitButton;
-    await submitButton.click({ force: true });
-  }
-  //login-page.js
-  async isLogOutButtonVisible() {
-    const logOutButton = this.logOutButton;
-    return await logOutButton.isVisible();
+    await this.page.evaluate(() => window.scrollBy(0, 200));
+
+    await this.submitButton.click({ force: true });
   }
 
-  async isErrorMessageVisible() {
-    const errorMessage = this.errorMessage;
-    return await errorMessage.isVisible();
-  }
-
+  // Error handling
   async errorMessageText() {
-    const errorMessage = this.errorMessage;
-    return await errorMessage.textContent();
+    return this.errorMessage.textContent();
   }
 }
